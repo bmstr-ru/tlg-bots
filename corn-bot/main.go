@@ -86,7 +86,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		log.Info().Any("schedule", schedule).Msg("Got schedule")
+		log.Info().Msg("Got schedule")
 
 		slots := schedule.findTimeSlots()
 		if len(*slots) > 0 {
@@ -95,6 +95,10 @@ func main() {
 				message = message + slot.Time.Format("02 Jan, 15:04") + ": " + strconv.Itoa(slot.Quantity) + " мест\n"
 			}
 			err = sendTelegramNotification(message)
+			if err != nil {
+				panic(err)
+			}
+			err = sendTelegramNotification("https://tickets.lakhta.events/event/" + event_id)
 			if err != nil {
 				panic(err)
 			}

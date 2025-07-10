@@ -15,12 +15,7 @@ import (
 )
 
 var event_regex = regexp.MustCompile(`.*https://tickets.lakhta.events/event/([^"]+)".*`)
-var moscow_timezone *time.Location
 var interval = 5 * time.Second
-
-func init() {
-	moscow_timezone, _ = time.LoadLocation("Europe/Moscow")
-}
 
 type ScheduleResponse struct {
 	Response ResponseResponse `json:"response"`
@@ -56,7 +51,7 @@ func (r *ResponseResponse) findTimeSlots() *[]TimeSlot {
 				}
 
 				slot := time.Date(slot_date.Year(), slot_date.Month(), slot_date.Day(),
-					slot_time.Hour(), slot_time.Minute(), 0, 0, moscow_timezone)
+					slot_time.Hour(), slot_time.Minute(), 0, 0, time.Local)
 				timeSlots = append(timeSlots, TimeSlot{Time: slot, Quantity: quantity})
 			}
 

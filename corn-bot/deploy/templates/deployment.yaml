@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: corn-bot
+  labels:
+    app: corn-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: corn-bot
+  template:
+    metadata:
+      labels:
+        app: corn-bot
+    spec:
+      containers:
+        - name: app
+          envFrom:
+            - secretRef:
+                name: corn-bot
+          image: "corn-bot:latest"
+          imagePullPolicy: Never
+          resources:
+            limits:
+              cpu: 100m
+              memory: 50Mi
+            requests:
+              cpu: 100m
+              memory: 50Mi

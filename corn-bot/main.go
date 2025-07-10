@@ -6,6 +6,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"
+	"net/http/cookiejar"
 	"os"
 	"regexp"
 	"strconv"
@@ -75,6 +76,12 @@ type TimeResponse struct {
 }
 
 func main() {
+	jar, err := cookiejar.New(nil) // Create a new in-memory cookie jar
+	if err != nil {
+		log.Panic().Err(err).Msg("Error creating cookie jar")
+	}
+	http.DefaultClient.Jar = jar
+
 	for {
 		event_id, err := getEventId()
 		if err != nil {
@@ -150,8 +157,20 @@ func getEventId() (string, error) {
 
 func getSchedule(event_id string) (*ResponseResponse, error) {
 	var body = fmt.Sprintf("{\"hash\":\"%s\"}", event_id)
+	get, _ := http.NewRequest("GET", "https://tickets.lakhta.events/event/"+event_id, nil)
+	get.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36")
+	response, err := http.DefaultClient.Do(get)
+	if err != nil && response.StatusCode/100 != 2 {
+		log.Error().Err(err).Msg("Error fetching main event page")
+		return nil, err
+	}
 
-	schedule_response, err := http.DefaultClient.Post("https://tickets.lakhta.events/api/no-scheme", "application/json", strings.NewReader(body))
+	post, _ := http.NewRequest("POST", "https://tickets.lakhta.events/api/no-scheme", strings.NewReader(body))
+	post.Header.Add("Content-Type", "application/json")
+	post.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36")
+	post.Header.Add("Referer", "https://tickets.lakhta.events/event/"+event_id)
+	post.Header.Add("Origin", "https://tickets.lakhta.events")
+	schedule_response, err := http.DefaultClient.Do(post)
 	if err != nil {
 		log.Error().Err(err).Msg("Error fetching schedule")
 		return nil, err

@@ -1,0 +1,6 @@
+GET https://torgi.gov.ru/new/api/public/lotcards/search?catCode=2&fiasGUID=e6010c50-dfbb-4395-b68b-ed03bedc0c1e&byFirstVersion=true&withFacets=true&page=0&size=10&sort=firstVersionPublicationDate,desc
+Accept: application/json
+
+
+===
+

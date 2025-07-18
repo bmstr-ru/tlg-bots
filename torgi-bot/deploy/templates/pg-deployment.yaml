@@ -19,14 +19,11 @@ spec:
           env:
             - name: POSTGRES_PASSWORD
               value: "password"
-          envFrom:
-            - secretRef:
-                name: corn-bot
           ports:
             - name: pgport
               containerPort: 5432
               protocol: TCP
-          image: "corn-bot:latest"
+          image: "postgres:latest"
           imagePullPolicy: Never
           resources:
             limits:

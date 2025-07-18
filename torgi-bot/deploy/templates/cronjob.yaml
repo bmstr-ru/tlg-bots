@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: torgi-bot
+  labels:
+    app: torgi-bot
+spec:
+  schedule: "0 10 * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 10
+      template:
+        spec:
+          containers:
+            - name: torgi-bot
+              image: "torgi-bot:latest"
+              imagePullPolicy: Never
+              envFrom:
+                - secretRef:
+                    name: torgi-bot
+              volumeMounts:
+                - mountPath: /var/lib/postgresql/data
+                  name: pgdata
+          restartPolicy: OnFailure
+          volumes:
+            - hostPath:
+                path: /Users/bmstr/postgres
+                type: DirectoryOrCreate
+              name: pgdata

@@ -18,12 +18,4 @@ spec:
               envFrom:
                 - secretRef:
                     name: torgi-bot
-              volumeMounts:
-                - mountPath: /var/lib/postgresql/data
-                  name: pgdata
           restartPolicy: OnFailure
-          volumes:
-            - hostPath:
-                path: /Users/bmstr/postgres
-                type: DirectoryOrCreate
-              name: pgdata

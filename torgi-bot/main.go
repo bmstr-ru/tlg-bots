@@ -2,11 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
@@ -38,7 +39,6 @@ func main() {
 func FetchLots() ([]*Lot, error) {
 	lotsRequest, _ := http.NewRequest("GET", "https://torgi.gov.ru/new/api/public/lotcards/search", nil)
 	q := lotsRequest.URL.Query()
-	q.Add("catCode", "2")
 	q.Add("fiasGUID", "e6010c50-dfbb-4395-b68b-ed03bedc0c1e")
 	q.Add("byFirstVersion", "true")
 	q.Add("withFacets", "true")

@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: water-bot
+  labels:
+    app: water-bot
+spec:
+  schedule: "0 11 23 * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 10
+      template:
+        spec:
+          containers:
+            - name: water-bot
+              image: "water-bot:latest"
+              imagePullPolicy: Never
+              envFrom:
+                - secretRef:
+                    name: water-bot
+          restartPolicy: OnFailure
